@@ -1,17 +1,51 @@
-// Grab the articles as a json
-$.getJSON("/articles", function(data) {
-  // For each one
-  for (var i = 0; i < data.length; i++) {
-    // Display the apropos information on the page
-    $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
-    $("#articles").append("<button data-id='" + data[i]._id + "'>Save article</button>");
+<div class="container">
+    <div class="col-md-12 jumbotron thehead">
+        <div class="text-center">
+            <h1> New Yorker Mongo Scraper</h1>
+        </div>
 
-  }
+    </div>
+    <div class="col-md-6">
+        {{#if article}}
+            {{#each article}}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>{{this.title}}</h4>
+                </div>
+                <div class="panel-body">
+                    <p> {{this.summary}}</p>
+                    <a href={{this.link}} target="_blank">{{this.link}}</a>
+                    <br><br>
+                    <button type="button" class="btn btn-success delete" data-id={{this._id}}>Delete Article</button>
+                    <button type="button" class="btn btn-success addnote" data-id={{this._id}}>Add Note</button>
+                </div>
+            </div>
+            {{/each}}
+        {{else}}
+        <div class="panel panel-default">
+            <div class="panel-body">
+            <h4>none saved!</h4>
+            </div>
+         </div>
+        {{/if}}
+    </div>
+    <div id="notes"></div> 
+</div>
+
+<script>
+    $(".delete").on("click", function() {
+  console.log("hitting")
+  var thisId = $(this).attr("data-id");
+  $.ajax({
+      method: "POST",
+      url: "/articles/delete/" + thisId
+  }).done(function(data) {
+      window.location = "/"
+      location.reload();
+  })
 });
 
-
-// Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
+$(".addnote").on("click", function() {
   // Empty the notes from the note section
   $("#notes").empty();
   // Save the id from the p tag
@@ -44,7 +78,6 @@ $(document).on("click", "p", function() {
     });
 });
 
-// When you click the savenote button
 $(document).on("click", "#savenote", function() {
   // Grab the id associated with the article from the submit button
   var thisId = $(this).attr("data-id");
@@ -73,13 +106,14 @@ $(document).on("click", "#savenote", function() {
   $("#bodyinput").val("");
 });
 
-$(".save").on("click", function() {
-  console.log("hitting")
-  var thisId = $(this).attr("data-id");
-  $.ajax({
-      method: "POST",
-      url: "/articles/save/" + thisId
-  }).done(function(data) {
-      window.location = "/"
-  })
-});
+
+
+
+
+
+
+
+
+
+
+</script>

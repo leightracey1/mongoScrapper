@@ -1,0 +1,46 @@
+<!--Homepage-->
+<div class="container">
+    <div class="col-md-12 jumbotron thehead">
+        <div class="text-center">
+            <h1> New YorkerScraper</h1>
+        </div>
+
+    </div>
+    <div class="col-md-12">
+        {{#if article}}
+            {{#each article}}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4>{{this.title}}</h4>
+                </div>
+                <div class="panel-body">
+                    <p> {{this.summary}}</p>
+                    <a href={{this.link}} target="_blank">https://www.newyorker.com{{this.link}}</a>
+                    <br><br>
+                    <button type="button" class="btn btn-success save" data-id={{this._id}}>Save Article</button>
+                </div>
+            </div>
+            {{/each}}
+        {{else}}
+        <div class="panel panel-default">
+            <div class="panel-body">
+            <h4>no articles!</h4>
+            </div>
+         </div>
+        {{/if}}
+    </div>
+</div>
+
+<script>
+    $(".save").on("click", function() {
+  console.log("hitting")
+  var thisId = $(this).attr("data-id");
+  $.ajax({
+      method: "POST",
+      url: "/articles/save/" + thisId
+  }).done(function(data) {
+      window.location = "/"
+      location.reload();
+  })
+});
+</script>
